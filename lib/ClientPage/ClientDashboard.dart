@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flp1/Widgets/ElevatedButton1.dart';
 
 
-  List workers = [
+  List services = [
     {"type": 'Electrician', "icon": Icons.lightbulb},
     {"type": 'Plumber', "icon": Icons.water_drop},
     {"type": 'Gardner', "icon": Icons.yard},
@@ -54,18 +54,18 @@ class ClientDashboard extends StatefulWidget {
 }
 
 class _ClientDashboardState extends State<ClientDashboard> {
-  String serviceType = 'Plumber';
-  String serviceTask = 'Unblock a sink';
+  int selectedServiceIndex = 0;
+  int selectedTaskIndex = 0;
 
-  void setServiceTask(text) {
+  void setServiceIndex(index) {
     setState(() {
-      serviceTask = text;
+      selectedServiceIndex = index;
     });
   }
 
-  void setServiceType(text) {
+  void setTaskIndex(index) {
     setState(() {
-      serviceType = text;
+      selectedTaskIndex = index;
     });
   }
 
@@ -97,14 +97,13 @@ class _ClientDashboardState extends State<ClientDashboard> {
                 ),
                 child: ListView(
                   children: [
-                    NewTask(
-                          serviceTask: serviceTask, serviceType: serviceType),
-                          Location(),
-                          ServiceType(setServiceType: setServiceType, setServiceTask: setServiceTask),
-                          ServiceTasks(serviceType: serviceType,setServiceTask: setServiceTask),
-                          TaskDescription(),
-                          AvailableDate(),
-                          AvailableTime(),
+                    NewTask(selectedServiceIndex: selectedServiceIndex, selectedTaskIndex: selectedTaskIndex),
+                    Location(),
+                    ServiceType(selectedServiceIndex: selectedServiceIndex, selectedTaskIndex: selectedTaskIndex,setServiceIndex: setServiceIndex, setTaskIndex: setTaskIndex),
+                    ServiceTasks(selectedServiceIndex: selectedServiceIndex, selectedTaskIndex: selectedTaskIndex,setServiceIndex: setServiceIndex, setTaskIndex: setTaskIndex),
+                    TaskDescription(),
+                    AvailableDate(),
+                    AvailableTime(),
                   ],
                 )))
       ],
@@ -135,10 +134,9 @@ class TextTitle extends StatelessWidget {
 }
 
 class NewTask extends StatelessWidget {
-  const NewTask(
-      {super.key, required this.serviceType, required this.serviceTask});
-  final String serviceType;
-  final String serviceTask;
+  const NewTask({super.key, required this.selectedServiceIndex, required this.selectedTaskIndex});
+  final int selectedServiceIndex;
+  final int selectedTaskIndex;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -155,7 +153,7 @@ class NewTask extends StatelessWidget {
         children: [
           TextHeading(text: 'New Task'),
           TextTitle(
-            text: 'I need a ${serviceType} to ${serviceTask}',
+            text: 'I need a ${services[selectedServiceIndex]['type']} to ${tasks[services[selectedServiceIndex]['type']][selectedTaskIndex]}',
           ),
           SizedBox(
             height: 10,
@@ -205,18 +203,12 @@ class _LocationState extends State<Location> {
   }
 }
 
-class ServiceType extends StatefulWidget {
-  const ServiceType({Key? key, required this.setServiceType, required this.setServiceTask}) : super(key: key);
-  final Function setServiceType;
-  final Function setServiceTask;
-  @override
-  // ignore: library_private_types_in_public_api
-  _ServiceTypeState createState() => _ServiceTypeState();
-}
-
-class _ServiceTypeState extends State<ServiceType> {
-  int selectedWorkerIndex = 0;
-
+class ServiceType extends StatelessWidget {
+  const ServiceType({super.key, required this.selectedServiceIndex, required this.selectedTaskIndex, required this.setServiceIndex, required this.setTaskIndex});
+  final int selectedServiceIndex;
+  final int selectedTaskIndex;
+  final Function setServiceIndex;
+  final Function setTaskIndex;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -237,7 +229,7 @@ class _ServiceTypeState extends State<ServiceType> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
-              itemCount: workers.length,
+              itemCount: services.length,
               itemBuilder: (ctx, index) {
                 return Align(
                   alignment: Alignment.center,
@@ -248,7 +240,7 @@ class _ServiceTypeState extends State<ServiceType> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
-                          color: selectedWorkerIndex == index
+                          color: selectedServiceIndex == index
                               ? Colors.pink
                               : Colors.white,
                           width: 5,
@@ -266,19 +258,14 @@ class _ServiceTypeState extends State<ServiceType> {
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                         onTap: (() {
-                          setState(() {
-                            selectedWorkerIndex = index;
-                          });
-                          widget.setServiceType(workers[index]["type"]);
-                          widget.setServiceTask(tasks[workers[index]["type"]][0]);
-                          print('inkwell pressed $selectedWorkerIndex');
+                          setServiceIndex(index);
                         }),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(
-                              workers[index]["icon"],
+                              services[index]["icon"],
                               color: Colors.pink,
                               size: 30,
                             ),
@@ -286,7 +273,7 @@ class _ServiceTypeState extends State<ServiceType> {
                               height: 5,
                             ),
                             Text(
-                              '${workers[index]["type"]}',
+                              '${services[index]["type"]}',
                               style: TextStyle(fontSize: 12),
                             )
                           ],
@@ -302,17 +289,12 @@ class _ServiceTypeState extends State<ServiceType> {
   }
 }
 
-class ServiceTasks extends StatefulWidget {
-  const ServiceTasks({Key? key, required this.serviceType,required this.setServiceTask}) : super(key: key);
-  final String serviceType;
-  final Function setServiceTask;
-  @override
-  // ignore: library_private_types_in_public_api
-  _ServiceTasksState createState() => _ServiceTasksState();
-}
-
-class _ServiceTasksState extends State<ServiceTasks> {
-  int selectedTaskIndex = 1;
+class ServiceTasks extends StatelessWidget {
+  const ServiceTasks({super.key, required this.selectedServiceIndex, required this.selectedTaskIndex, required this.setServiceIndex, required this.setTaskIndex});
+  final int selectedServiceIndex;
+  final int selectedTaskIndex;
+  final Function setServiceIndex;
+  final Function setTaskIndex;
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
@@ -335,13 +317,10 @@ class _ServiceTasksState extends State<ServiceTasks> {
               child: ListView(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                children: List.generate(tasks[widget.serviceType].length, (int index) {
+                children: List.generate(tasks[services[selectedServiceIndex]['type']].length, (int index) {
                   return InkWell(
                     onTap: () {
-                      setState(() {
-                        selectedTaskIndex=index;
-                      });
-                      widget.setServiceTask(tasks[widget.serviceType][index]);
+                      setTaskIndex(index);
                     },
                     child: Container(
                     padding: EdgeInsets.all(10),
@@ -354,7 +333,7 @@ class _ServiceTasksState extends State<ServiceTasks> {
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(40)),
                       ),
-                    child: Text(tasks[widget.serviceType][index]),
+                    child: Text(tasks[services[selectedServiceIndex]['type']][index]),
                   ),
                   );
                 }),
