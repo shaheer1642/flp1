@@ -5,7 +5,7 @@ class ElevatedButton1 extends StatelessWidget {
   const ElevatedButton1({
     super.key,
     required this.text,
-    required this.fontSize,
+    this.fontSize = 14.0,
     required this.onPressed
   });
   

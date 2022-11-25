@@ -1,3 +1,4 @@
+import 'package:flp1/ClientPage/ClientIndex.dart';
 import 'package:flp1/Widgets/BrandName.dart';
 import 'package:flp1/Widgets/TextButton1.dart';
 import 'package:flp1/Widgets/TextField1.dart';
@@ -41,11 +42,23 @@ class _MainIndexState extends State<MainIndex> {
               TextButton1(
                   text: 'Registeration',
                   fontSize: 20,
-                  onPressed: () => {print('Registeration clicked')}),
+                  onPressed: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ClientIndex()),
+                        )
+                      }),
               ElevatedButton1(
                 text: 'Login',
                 fontSize: 20,
-                onPressed: () => {print('Login clicked')},
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ClientIndex()),
+                  )
+                },
               )
             ],
           )
@@ -76,7 +89,10 @@ class _MainIndexState extends State<MainIndex> {
                           ],
                         ),
                       ),
-                      Text('Select Task',style: TextStyle(color: Colors.pink,fontSize: 30),),
+                      Text(
+                        'Select Task',
+                        style: TextStyle(color: Colors.pink, fontSize: 30),
+                      ),
                       Expanded(
                           flex: 2,
                           child: ListView.builder(
@@ -144,12 +160,11 @@ class _MainIndexState extends State<MainIndex> {
                       Expanded(flex: 1, child: Container()),
                       Container(
                         width: 100,
-                        child: 
-                      ElevatedButton1(
-                                text: 'Go',
-                                fontSize: 20,
-                                onPressed: () => {print('GET PRICE clicked')},
-                              ),
+                        child: ElevatedButton1(
+                          text: 'Go',
+                          fontSize: 20,
+                          onPressed: () => {print('GET PRICE clicked')},
+                        ),
                       )
                     ],
                   )))),
