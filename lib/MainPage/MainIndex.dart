@@ -17,12 +17,14 @@ class _MainIndexState extends State<MainIndex> {
   final taskInputController = TextEditingController();
 
   List workers = [
-    {"type": 'electrician', "icon": Icons.lightbulb},
-    {"type": 'plumber', "icon": Icons.water_drop},
-    {"type": 'gardner', "icon": Icons.yard},
-    {"type": 'housekeeper', "icon": Icons.iron},
-    {"type": 'cook', "icon": Icons.cookie},
+    {"type": 'Electrician', "icon": Icons.lightbulb},
+    {"type": 'Plumber', "icon": Icons.water_drop},
+    {"type": 'Gardner', "icon": Icons.yard},
+    {"type": 'Housekeeper', "icon": Icons.iron},
+    {"type": 'Cook', "icon": Icons.cookie},
+    {"type": 'More', "icon": Icons.arrow_right}
   ];
+  int selectedWorkerIndex = 0;
 
   void taskInputOnChange(text) {}
 
@@ -55,78 +57,100 @@ class _MainIndexState extends State<MainIndex> {
               child: Container(
                   padding: EdgeInsets.all(50),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Expanded(flex: 1, child: Container()),
                       Expanded(
-                        flex: 4,
+                        flex: 2,
                         child: Row(
                           children: [
                             Expanded(
                               flex: 10,
                               child: TextField1(
-                                hintText: 'Enter your task',
+                                hintText: 'Enter your location',
                                 controller: taskInputController,
                                 onChanged: taskInputOnChange,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: ElevatedButton1(
-                                text: 'GET PRICE',
-                                fontSize: 20,
-                                onPressed: () => {print('GET PRICE clicked')},
                               ),
                             ),
                           ],
                         ),
                       ),
+                      Text('Select Task',style: TextStyle(color: Colors.pink,fontSize: 30),),
                       Expanded(
-                        flex: 2,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: workers.length,
-                          itemBuilder: (ctx, int) {
-                            return Container(
-                              width: 125,
-                              height: 50,
-                              margin: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(125)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 3,
-                                    blurRadius: 7,
-                                    offset: Offset(
-                                        0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    workers[int]["icon"],
-                                    color: Colors.pink,
-                                    size: 50,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text('${workers[int]["type"]}')
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                          flex: 2,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemCount: workers.length,
+                            itemBuilder: (ctx, index) {
+                              return Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                    width: 150,
+                                    height: 150,
+                                    margin: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: selectedWorkerIndex == index
+                                            ? Colors.pink
+                                            : Colors.white,
+                                        width: 5,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(150)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 3,
+                                          blurRadius: 7,
+                                          offset: Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(150)),
+                                      onTap: (() {
+                                        setState(() {
+                                          selectedWorkerIndex = index;
+                                        });
+                                        print(
+                                            'inkwell pressed $selectedWorkerIndex');
+                                      }),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            workers[index]["icon"],
+                                            color: Colors.pink,
+                                            size: 50,
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Text('${workers[index]["type"]}')
+                                        ],
+                                      ),
+                                    )),
+                              );
+                            },
+                          )),
                       Expanded(flex: 1, child: Container()),
+                      Container(
+                        width: 100,
+                        child: 
+                      ElevatedButton1(
+                                text: 'Go',
+                                fontSize: 20,
+                                onPressed: () => {print('GET PRICE clicked')},
+                              ),
+                      )
                     ],
                   )))),
     );

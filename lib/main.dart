@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'TopTabsController.dart';
 import 'MainPage/MainIndex.dart';
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scrollBehavior: CustomScrollBehavior(),
       title: 'JobUp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -19,4 +21,13 @@ class MyApp extends StatelessWidget {
       home: MainIndex(),
     );
   }
+}
+
+class CustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }
